@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { showToast } from "@/utils/ToastHelpers";
+import { useToast } from "@/components/ui/use-toast";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -39,6 +39,7 @@ export default function Auth() {
   const [isSignUp, setIsSignUp] = useState(false);
   const supabase = createClient();
   const router = useRouter();
+  const { toast } = useToast();
 
   const form = useForm<
     z.infer<typeof signInSchema> | z.infer<typeof signUpSchema>
@@ -62,21 +63,34 @@ export default function Auth() {
 
       if (error) {
         console.error(error);
-        showToast("error", error.message);
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
       } else {
-        showToast("success", "Check your email for a confirmation link");
+        toast({
+          title: "Success",
+          description: "Check your email for a confirmation link",
+        });
       }
     } else {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email: values.email,
         password: values.password,
       });
 
       if (error) {
         console.error(error);
-        showToast("error", error.message);
+        toast({
+          title: "Error",
+          description: error.message,
+        });
       } else {
-        showToast("success", "Signed in successfully");
+        toast({
+          title: "Success",
+          description: "Signed in successfully",
+        });
         router.push("/");
       }
     }
