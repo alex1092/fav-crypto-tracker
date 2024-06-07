@@ -83,7 +83,10 @@ export default function Auth() {
   }
 
   return (
-    <main className="flex items-center justify-center h-screen">
+    <main className="flex flex-col items-center gap-4 justify-center h-screen">
+      <h1 className="text-2xl font-bold">
+        Sign in to see your favorite crypto coins
+      </h1>
       <Card className="w-[320px]">
         <CardHeader>
           <CardTitle>{isSignUp ? "Sign up" : "Sign in"}</CardTitle>

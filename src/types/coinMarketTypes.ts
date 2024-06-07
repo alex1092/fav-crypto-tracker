@@ -1,4 +1,4 @@
-export type MarketDataType = {
+export type CoinMarketDataType = {
   id: string;
   symbol: string;
   name: string;
@@ -25,6 +25,10 @@ export type MarketDataType = {
   atlDate: Date;
   roi: Roi | null;
   lastUpdated: Date;
+};
+
+export type CoinMarketDataTableProps = {
+  data: CoinMarketDataType[];
 };
 
 export type Roi = {
