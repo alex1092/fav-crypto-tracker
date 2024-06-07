@@ -8,7 +8,6 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
-import { Checkbox } from "@/components/ui/checkbox";
 import Image from "next/image";
 import {
   ColumnFiltersState,
@@ -19,7 +18,7 @@ import {
 } from "@tanstack/react-table";
 import { CoinMarketDataTableProps } from "@/types/coinMarketTypes";
 import { Input } from "./ui/input";
-import { useState } from "react";
+
 import React from "react";
 
 const columns = [

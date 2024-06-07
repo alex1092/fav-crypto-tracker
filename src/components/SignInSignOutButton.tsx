@@ -27,6 +27,7 @@ export default function SignInSignOutButton() {
     if (user) {
       supabase.auth.signOut();
       setUser(null);
+      router.refresh();
     } else {
       router.push("/auth");
     }
