@@ -77,6 +77,10 @@ export default async function Home() {
             title="Total 24h Volume"
             value={globalMarketData.data.total_volume.usd}
           />
+          <TotalsCard
+            title="Market Cap Change"
+            value={globalMarketData.data.market_cap_change_percentage_24h_usd}
+          />
         </div>
 
         <div className=" w-full px-10">

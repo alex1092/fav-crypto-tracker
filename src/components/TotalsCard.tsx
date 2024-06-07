@@ -13,7 +13,17 @@ export default function TotalsCard({ title, value }: TotalsCardProps) {
   return (
     <Card>
       <CardHeader>{title}</CardHeader>
-      <CardContent className="text-2xl font-bold">{formattedValue}</CardContent>
+      <CardContent className="text-2xl font-bold">
+        {title !== "Market Cap Change" ? (
+          formattedValue
+        ) : (
+          <span
+            className={Number(value) > 0 ? "text-green-500" : "text-red-500"}
+          >
+            {`${Number(value).toFixed(2)}%`}
+          </span>
+        )}
+      </CardContent>
     </Card>
   );
 }
