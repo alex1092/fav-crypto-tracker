@@ -69,7 +69,7 @@ export default async function Home() {
         <h1 className="text-4xl font-bold">Crypto tracker</h1>
         <p className="text-2xl font-bold">Track your favorite coins</p>
 
-        <div className="flex flex-row justify-center gap-4 w-full pt-4">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap justify-center gap-4 w-full pt-4 px-4 sm:px-0">
           <TotalsCard
             title="Active Cryptocurrencies"
             value={globalMarketData.data.active_cryptocurrencies}
