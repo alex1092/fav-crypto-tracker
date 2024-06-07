@@ -1,11 +1,39 @@
 import CoinMarketDataTable from "@/components/CoinMarketDataTable";
 import SignInSignOutButton from "@/components/SignInSignOutButton";
-import { COIN_GECKO_COIN_MARKET_ENDPOINT } from "@/utils/constants";
+import TotalsCard from "@/components/TotalsCard";
+import {
+  COIN_GECKO_COIN_MARKET_ENDPOINT,
+  COIN_GECKO_GLOBAL_MARKET_DATA_ENDPOINT,
+} from "@/utils/constants";
 import { createClient } from "@/utils/supabase/server";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
+const options = {
+  method: "GET",
+  headers: {
+    accept: "application/json",
+    "x-cg-demo-api-key": process.env.COIN_GECKO_API_KEY || "",
+  },
+};
+
 async function fetchCoinMarketData() {
+  const res = await fetch(COIN_GECKO_COIN_MARKET_ENDPOINT, options);
+  if (!res.ok) {
+    throw new Error("Failed to fetch coin market data");
+  }
+  return res.json();
+}
+
+async function fetchGlobalMarketData() {
+  const res = await fetch(COIN_GECKO_GLOBAL_MARKET_DATA_ENDPOINT, options);
+  if (!res.ok) {
+    throw new Error("Failed to fetch global market data");
+  }
+  return res.json();
+}
+
+export default async function Home() {
   const supabase = createClient();
 
   const {
@@ -16,23 +44,8 @@ async function fetchCoinMarketData() {
     return redirect("/auth");
   }
 
-  const options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      "x-cg-demo-api-key": process.env.COIN_GECKO_API_KEY || "",
-    },
-  };
-
-  const res = await fetch(COIN_GECKO_COIN_MARKET_ENDPOINT, options);
-  if (!res.ok) {
-    throw new Error("Failed to fetch coin market data");
-  }
-  return res.json();
-}
-
-export default async function Home() {
   const coinMarketData = await fetchCoinMarketData();
+  const globalMarketData = await fetchGlobalMarketData();
 
   return (
     <main>
@@ -50,7 +63,23 @@ export default async function Home() {
         <h1 className="text-4xl font-bold">Crypto tracker</h1>
         <p className="text-2xl font-bold">Track your favorite coins</p>
 
-        <div className="mt-5 w-full p-10">
+        <div className="flex flex-row justify-center gap-4 w-full pt-4">
+          <TotalsCard
+            title="Active Cryptocurrencies"
+            value={globalMarketData.data.active_cryptocurrencies}
+          />
+          <TotalsCard
+            title="Total Market Cap"
+            value={globalMarketData.data.total_market_cap.usd}
+          />
+
+          <TotalsCard
+            title="Total 24h Volume"
+            value={globalMarketData.data.total_volume.usd}
+          />
+        </div>
+
+        <div className=" w-full px-10">
           <CoinMarketDataTable data={coinMarketData} />
         </div>
       </div>
