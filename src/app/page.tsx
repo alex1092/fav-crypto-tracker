@@ -1,4 +1,5 @@
 import CoinMarketDataTable from "@/components/CoinMarketDataTable";
+import { ModeToggle } from "@/components/ModeToggle";
 import SignInSignOutButton from "@/components/SignInSignOutButton";
 import TotalsCard from "@/components/TotalsCard";
 import {
@@ -49,7 +50,8 @@ export default async function Home() {
 
   return (
     <main>
-      <nav className="flex justify-end p-4 absolute top-0 right-0">
+      <nav className="flex justify-end p-4 absolute top-0 space-x-3 right-0">
+        <ModeToggle />
         <SignInSignOutButton />
       </nav>
       <div className="flex flex-col items-center justify-start h-screen">
