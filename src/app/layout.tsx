@@ -22,7 +22,7 @@ export default function RootLayout({
       <body className={`${inter.className} w-screen h-screen`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
