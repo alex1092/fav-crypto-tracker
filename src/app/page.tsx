@@ -56,7 +56,11 @@ export default async function Home() {
       </nav>
       <div className="flex flex-col items-center justify-start h-screen">
         <Image
-          src="/wojak.png"
+          src={
+            globalMarketData.data.market_cap_change_percentage_24h_usd < 0
+              ? "/red-wojak.png"
+              : "/wojak.png"
+          }
           alt="Making it rain"
           width={150}
           height={150}
