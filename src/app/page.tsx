@@ -1,6 +1,5 @@
 import CoinMarketDataTable from "@/components/CoinMarketDataTable";
-import { ModeToggle } from "@/components/ModeToggle";
-import SignInSignOutButton from "@/components/SignInSignOutButton";
+
 import TotalsCard from "@/components/TotalsCard";
 import {
   COIN_GECKO_COIN_MARKET_ENDPOINT,
@@ -96,7 +95,7 @@ export default async function Home() {
         </div>
 
         <div className=" w-full px-10">
-          <CoinMarketDataTable data={coinMarketData} />
+          <CoinMarketDataTable data={coinMarketData} user={user} />
         </div>
       </div>
     </main>

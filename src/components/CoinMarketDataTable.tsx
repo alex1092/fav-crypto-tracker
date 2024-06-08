@@ -9,13 +9,17 @@ import {
   TableRow,
 } from "./ui/table";
 import currencyJs from "currency.js";
+import { ArrowUpDown, Star } from "lucide-react";
+
 import Image from "next/image";
 import {
   ColumnFiltersState,
+  SortingState,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import {
@@ -23,9 +27,11 @@ import {
   CoinMarketDataType,
 } from "@/types/coinMarketTypes";
 import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+import { createClient } from "@/utils/supabase/client";
 
-import React from "react";
-import { Checkbox } from "./ui/checkbox";
+import React, { useState } from "react";
+import { User } from "@supabase/supabase-js";
 
 const columnHelper = createColumnHelper<CoinMarketDataType>();
 
@@ -53,21 +59,52 @@ const columns = [
   }),
 
   columnHelper.accessor("market_cap", {
-    header: "Market Cap",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Market Cap
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    // header: "Market Cap",
     cell: (info) => {
       let marketCap = currencyJs(info.getValue(), { separator: "," }).format();
       return `${marketCap}`;
     },
   }),
   columnHelper.accessor("total_volume", {
-    header: "Volume",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Volume
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: (info) => {
       let volume = currencyJs(info.getValue(), { separator: "," }).format();
       return `${volume}`;
     },
   }),
   columnHelper.accessor("price_change_percentage_24h", {
-    header: "Change",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Change
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }: { row: any }) => (
       <span
         className={`${row.original.price_change_24h < 0 ? "text-red-500" : "text-green-500"}`}
@@ -77,43 +114,91 @@ const columns = [
     ),
   }),
   columnHelper.accessor("ath", {
-    header: "ATH",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          ATH
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: (info) => `$${info.getValue()}`,
   }),
-
-  // I want to add favorite column
-  {
-    id: "isFavorite",
-    header: "Favorite",
-    cell: ({ row }: { row: any }) => (
-      <Checkbox
-        checked={row.original.isFavorite}
-        onChange={(event) => {
-          // Update the isFavorite property when the checkbox is toggled
-
-          row.original.isFavorite = !row.original.isFavorite;
-        }}
-      />
-    ),
-  },
 ];
 
 export default function CoinMarketDataTable({
   data,
+  user,
 }: {
   data: CoinMarketDataArrayType;
+  user: User;
 }) {
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
 
+  const supabase = createClient();
+
+  //   const user = "hi";
+  // defines the favorite section of the data table
+  const favorite = [
+    {
+      id: "isFavorite",
+      header: "Favorite",
+      cell: ({ row }: { row: any }) => {
+        const isFavorite = favoriteIds.includes(row.original.id);
+        const toggleFavorite = async () => {
+          const isFavorite = favoriteIds.includes(row.original.id);
+
+          if (isFavorite) {
+            // Remove the favorite
+            //     await supabase
+            //       .from("favorites")
+            //       .delete()
+            //       .eq("client_id", user.id)
+            //       .eq("coin_id", row.original.id);
+            //   } else {
+            //     // Add the favorite
+            //     await supabase.from("favorites").insert({
+            //       client_id: user.id,
+            //       restaurant_id: row.original.id,
+            //     });
+          }
+
+          // Update the local state
+          setFavoriteIds((prevFavoriteIds) => {
+            if (isFavorite) {
+              return prevFavoriteIds.filter((id) => id !== row.original.id);
+            } else {
+              return [...prevFavoriteIds, row.original.id];
+            }
+          });
+        };
+
+        return (
+          <Star
+            onClick={toggleFavorite}
+            color={isFavorite ? "gold" : "currentColor"}
+          />
+        );
+      },
+    },
+  ];
+
+  // defines the table
   const table = useReactTable({
     data,
-    columns,
+    columns: [...columns, ...favorite],
     getCoreRowModel: getCoreRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
     state: {
+      sorting,
       columnFilters,
     },
   });
