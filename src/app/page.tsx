@@ -11,6 +11,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import currency from "currency.js";
 import { GlobalMarketArrayData } from "@/types/globalMarketType";
+import { NavBar } from "@/components/NavBar";
 
 const options = {
   method: "GET",
@@ -52,10 +53,7 @@ export default async function Home() {
 
   return (
     <main>
-      <nav className="flex justify-end p-4 absolute top-0 space-x-3 right-0">
-        <ModeToggle />
-        <SignInSignOutButton />
-      </nav>
+      <NavBar />
       <div className="flex flex-col items-center justify-start h-screen">
         <Image
           src={
@@ -63,9 +61,9 @@ export default async function Home() {
               ? "/red-wojak.png"
               : "/wojak.png"
           }
-          alt="Making it rain"
-          width={150}
-          height={150}
+          alt="wojack"
+          width={75}
+          height={75}
           className="mt-10 pb-3"
         />
         <h1 className="text-4xl font-bold">Crypto tracker</h1>
