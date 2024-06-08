@@ -8,82 +8,101 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
+import currencyJs from "currency.js";
 import Image from "next/image";
 import {
   ColumnFiltersState,
+  createColumnHelper,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { CoinMarketDataTableProps } from "@/types/coinMarketTypes";
+import {
+  CoinMarketDataArrayType,
+  CoinMarketDataType,
+} from "@/types/coinMarketTypes";
 import { Input } from "./ui/input";
 
 import React from "react";
+import { Checkbox } from "./ui/checkbox";
+
+const columnHelper = createColumnHelper<CoinMarketDataType>();
 
 const columns = [
-  {
+  columnHelper.accessor("image", {
     header: "Image",
-    accessorKey: "image",
-    cell: ({ row }: { row: any }) => (
+    cell: (info) => (
       <Image
-        src={row.original.image}
-        alt={row.original.name}
+        src={info.getValue()}
+        alt={info.getValue()}
         width={32}
         height={32}
       />
     ),
-  },
-  {
+  }),
+
+  columnHelper.accessor("name", {
     header: "Coin",
-    accessorKey: "name",
-  },
-  {
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor("current_price", {
     header: "Price",
-    accessorKey: "current_price",
-  },
-  {
+    // cell: (info) => <span>${currency(info.getValue(), { precision: 2 })}</span>,
+    cell: (info) => `$${info.getValue()}`,
+  }),
+
+  columnHelper.accessor("market_cap", {
     header: "Market Cap",
-    accessorKey: "market_cap",
-  },
-  {
+    cell: (info) => {
+      let marketCap = currencyJs(info.getValue(), { separator: "," }).format();
+      return `${marketCap}`;
+    },
+  }),
+  columnHelper.accessor("total_volume", {
     header: "Volume",
-    accessorKey: "total_volume",
-  },
-  {
+    cell: (info) => {
+      let volume = currencyJs(info.getValue(), { separator: "," }).format();
+      return `${volume}`;
+    },
+  }),
+  columnHelper.accessor("price_change_percentage_24h", {
     header: "Change",
-    accessorKey: "price_change_24h",
     cell: ({ row }: { row: any }) => (
       <span
         className={`${row.original.price_change_24h < 0 ? "text-red-500" : "text-green-500"}`}
       >
-        {(row.original.price_change_24h / 100).toFixed(2)}%
+        {row.original.price_change_percentage_24h.toFixed(2)}%
       </span>
     ),
-  },
-  {
+  }),
+  columnHelper.accessor("ath", {
     header: "ATH",
-    accessorKey: "ath",
-  },
+    cell: (info) => `$${info.getValue()}`,
+  }),
+
   // I want to add favorite column
-  //   {
-  //     id: "isFavorite",
-  //     header: "Favorite",
-  //     cell: ({ row }: { row: any }) => (
-  //       <Checkbox
-  //         checked={row.original.isFavorite}
-  //         onChange={() => {
-  //           // Update the isFavorite property when the checkbox is toggled
-  //           row.original.isFavorite = !row.original.isFavorite;
-  //         }}
-  //       />
-  //     ),
-  //   },
+  {
+    id: "isFavorite",
+    header: "Favorite",
+    cell: ({ row }: { row: any }) => (
+      <Checkbox
+        checked={row.original.isFavorite}
+        onChange={(event) => {
+          // Update the isFavorite property when the checkbox is toggled
+
+          row.original.isFavorite = !row.original.isFavorite;
+        }}
+      />
+    ),
+  },
 ];
 
 export default function CoinMarketDataTable({
   data,
-}: CoinMarketDataTableProps) {
+}: {
+  data: CoinMarketDataArrayType;
+}) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );

@@ -1,44 +1,42 @@
-export type CoinMarketDataType = {
-  id: string;
-  symbol: string;
-  name: string;
-  image: string;
-  currentPrice: number;
-  marketCap: number;
-  marketCapRank: number;
-  fullyDilutedValuation: number | null;
-  totalVolume: number;
-  high24H: number;
-  low24H: number;
-  priceChange24H: number;
-  priceChangePercentage24H: number;
-  marketCapChange24H: number;
-  marketCapChangePercentage24H: number;
-  circulatingSupply: number;
-  totalSupply: number | null;
-  maxSupply: number | null;
-  ath: number;
-  athChangePercentage: number;
-  athDate: Date;
-  atl: number;
-  atlChangePercentage: number;
-  atlDate: Date;
-  roi: Roi | null;
-  lastUpdated: Date;
-};
-
-export type CoinMarketDataTableProps = {
-  data: CoinMarketDataType[];
-};
-
-export type Roi = {
-  times: number;
-  currency: Currency;
-  percentage: number;
-};
-
 export enum Currency {
   Btc = "btc",
   Eth = "eth",
   Usd = "usd",
+}
+
+export type CoinMarketDataArrayType = CoinMarketDataType[];
+
+export interface CoinMarketDataType {
+  id: string;
+  symbol: string;
+  name: string;
+  image: string;
+  current_price: number;
+  market_cap: number;
+  market_cap_rank: number;
+  fully_diluted_valuation?: number;
+  total_volume: number;
+  high_24h: number;
+  low_24h: number;
+  price_change_24h: number;
+  price_change_percentage_24h: number;
+  market_cap_change_24h: number;
+  market_cap_change_percentage_24h: number;
+  circulating_supply: number;
+  total_supply?: number;
+  max_supply?: number;
+  ath: number;
+  ath_change_percentage: number;
+  ath_date: string;
+  atl: number;
+  atl_change_percentage: number;
+  atl_date: string;
+  roi?: Roi;
+  last_updated: string;
+}
+
+export interface Roi {
+  times: number;
+  currency: string;
+  percentage: number;
 }

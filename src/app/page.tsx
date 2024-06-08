@@ -9,6 +9,8 @@ import {
 import { createClient } from "@/utils/supabase/server";
 import Image from "next/image";
 import { redirect } from "next/navigation";
+import currency from "currency.js";
+import { GlobalMarketArrayData } from "@/types/globalMarketType";
 
 const options = {
   method: "GET",
@@ -46,7 +48,7 @@ export default async function Home() {
   }
 
   const coinMarketData = await fetchCoinMarketData();
-  const globalMarketData = await fetchGlobalMarketData();
+  const globalMarketData: GlobalMarketArrayData = await fetchGlobalMarketData();
 
   return (
     <main>
@@ -76,12 +78,18 @@ export default async function Home() {
           />
           <TotalsCard
             title="Total Market Cap"
-            value={globalMarketData.data.total_market_cap.usd}
+            value={currency(globalMarketData.data.total_market_cap.usd, {
+              separator: ",",
+              precision: 2,
+            }).format()}
           />
 
           <TotalsCard
             title="Total 24h Volume"
-            value={globalMarketData.data.total_volume.usd}
+            value={currency(globalMarketData.data.total_volume.usd, {
+              separator: ",",
+              precision: 2,
+            }).format()}
           />
           <TotalsCard
             title="Market Cap Change"
