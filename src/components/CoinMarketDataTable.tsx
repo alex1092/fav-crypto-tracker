@@ -30,7 +30,7 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { createClient } from "@/utils/supabase/client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
 
 const columnHelper = createColumnHelper<CoinMarketDataType>();
@@ -131,67 +131,19 @@ const columns = [
 
 export default function CoinMarketDataTable({
   data,
-  user,
 }: {
   data: CoinMarketDataArrayType;
   user: User;
 }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
 
-  const supabase = createClient();
-
-  //   const user = "hi";
   // defines the favorite section of the data table
-  const favorite = [
-    {
-      id: "isFavorite",
-      header: "Favorite",
-      cell: ({ row }: { row: any }) => {
-        const isFavorite = favoriteIds.includes(row.original.id);
-        const toggleFavorite = async () => {
-          const isFavorite = favoriteIds.includes(row.original.id);
-
-          if (isFavorite) {
-            // Remove the favorite
-            //     await supabase
-            //       .from("favorites")
-            //       .delete()
-            //       .eq("client_id", user.id)
-            //       .eq("coin_id", row.original.id);
-            //   } else {
-            //     // Add the favorite
-            //     await supabase.from("favorites").insert({
-            //       client_id: user.id,
-            //       restaurant_id: row.original.id,
-            //     });
-          }
-
-          // Update the local state
-          setFavoriteIds((prevFavoriteIds) => {
-            if (isFavorite) {
-              return prevFavoriteIds.filter((id) => id !== row.original.id);
-            } else {
-              return [...prevFavoriteIds, row.original.id];
-            }
-          });
-        };
-
-        return (
-          <Star
-            onClick={toggleFavorite}
-            color={isFavorite ? "gold" : "currentColor"}
-          />
-        );
-      },
-    },
-  ];
 
   // defines the table
   const table = useReactTable({
     data,
-    columns: [...columns, ...favorite],
+    columns: [...columns],
     getCoreRowModel: getCoreRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
