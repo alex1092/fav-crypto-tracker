@@ -32,6 +32,7 @@ import { createClient } from "@/utils/supabase/client";
 
 import React, { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
 
 const columnHelper = createColumnHelper<CoinMarketDataType>();
 
@@ -137,6 +138,7 @@ export default function CoinMarketDataTable({
 }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
+  const router = useRouter();
 
   // defines the favorite section of the data table
 
@@ -192,6 +194,9 @@ export default function CoinMarketDataTable({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  onClick={() => {
+                    router.push(`/coin/${row.original.id}`);
+                  }}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
