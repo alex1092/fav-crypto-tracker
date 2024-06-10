@@ -22,60 +22,58 @@ export default async function Page({ params }: { params: { id: string } }) {
   const cleanDescription = DOMPurify.sanitize(coinData.description.en);
 
   if (!coinData) {
+    return <div>Hmmm something went wrong...</div>;
   }
   return (
     <>
       <BackChevronButton />
-      {!coinData ? (
-        <div>Hmmm something went wrong...</div>
-      ) : (
-        <div className="flex flex-col items-center justify-center h-screen">
-          <div className="flex flex-row items-center justify-center sm:space-x-4 align-middle">
-            <Image
-              src={coinData.image.large}
-              alt={coinData.name}
-              width={40}
-              height={40}
-            />
-            <h1 className="text-3xl text-left font-bold  ">{coinData.name}</h1>
-          </div>
-          <p className="text-xl ">{coinData.symbol}</p>
-          <div className=" flex flex-col sm:flex-row sm:flex-wrap space-x-4 p-4">
-            <TotalsCard
-              title={"Current Price"}
-              value={currency(coinData.market_data.current_price.usd, {
-                symbol: "$",
-                separator: ",",
-              }).format()}
-            />
-            <TotalsCard
-              title={"Price Change%"}
-              value={coinData.market_data.price_change_percentage_24h}
-              percentageChange
-            />
 
-            <TotalsCard
-              title="Rank"
-              value={coinData.market_data.market_cap_rank}
-            />
-            <TotalsCard
-              title={"Market Cap"}
-              value={currency(coinData.market_data.market_cap.usd, {
-                symbol: "$",
-                separator: ",",
-              }).format()}
-            />
-          </div>
-
-          <div className="m-5 space-y-2">
-            <p className="text-lg font-bold">About {coinData.name}</p>
-            <p
-              className=" font-light text-sm    "
-              dangerouslySetInnerHTML={{ __html: cleanDescription }}
-            />
-          </div>
+      <div className="flex flex-col mt-10  h-screen">
+        <div className="flex flex-row items-center justify-center sm:space-x-4  align-middle">
+          <Image
+            src={coinData.image.large}
+            alt={coinData.name}
+            width={40}
+            height={40}
+          />
+          <h1 className="text-3xl text-left font-bold  ">{coinData.name}</h1>
         </div>
-      )}
+
+        <div className=" flex flex-col sm:flex-row p-4 space-y-4 sm:space-y-0 sm:justify-center sm:space-x-4">
+          <TotalsCard
+            title={"Current Price"}
+            value={currency(coinData.market_data.current_price.usd, {
+              symbol: "$",
+              separator: ",",
+            }).format()}
+          />
+
+          <TotalsCard
+            title="Rank"
+            value={coinData.market_data.market_cap_rank}
+          />
+          <TotalsCard
+            title={"Price Change%"}
+            value={coinData.market_data.price_change_percentage_24h}
+            percentageChange
+          />
+          <TotalsCard
+            title={"Market Cap"}
+            value={currency(coinData.market_data.market_cap.usd, {
+              symbol: "$",
+              separator: ",",
+            }).format()}
+          />
+        </div>
+
+        <div className="p-4 space-y-2">
+          <p className="text-lg font-bold">About {coinData.name}</p>
+          <p
+            className=" font-light text-sm text-left "
+            dangerouslySetInnerHTML={{ __html: cleanDescription }}
+          />
+        </div>
+      </div>
     </>
   );
 }
