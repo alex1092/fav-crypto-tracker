@@ -67,7 +67,7 @@ export default async function Page({ params }: { params: { id: string } }) {
             />
           </div>
 
-          <div className="m-10 space-y-2">
+          <div className="m-5 space-y-2">
             <p className="text-lg font-bold">About {coinData.name}</p>
             <p
               className=" font-light text-sm    "
