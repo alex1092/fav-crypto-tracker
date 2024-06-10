@@ -30,7 +30,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         <div>Hmmm something went wrong...</div>
       ) : (
         <div className="flex flex-col items-center justify-center h-screen">
-          <div className="flex flex-row items-center justify-center space-x-4 align-middle">
+          <div className="flex flex-row items-center justify-center sm:space-x-4 align-middle">
             <Image
               src={coinData.image.large}
               alt={coinData.name}
@@ -40,7 +40,7 @@ export default async function Page({ params }: { params: { id: string } }) {
             <h1 className="text-3xl text-left font-bold  ">{coinData.name}</h1>
           </div>
           <p className="text-xl ">{coinData.symbol}</p>
-          <div className=" flex flex-row flex-wrap space-x-4 p-4">
+          <div className=" flex flex-col sm:flex-row sm:flex-wrap space-x-4 p-4">
             <TotalsCard
               title={"Current Price"}
               value={currency(coinData.market_data.current_price.usd, {
