@@ -6,6 +6,7 @@ import DOMPurify from "isomorphic-dompurify";
 import TotalsCard from "@/components/TotalsCard";
 import { CoinDataTypes } from "@/types/CoinDataTypes";
 import BackChevronButton from "@/components/BackChevronButton";
+import currency from "currency.js";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const fetchCoinData = async () => {
@@ -39,17 +40,33 @@ export default async function Page({ params }: { params: { id: string } }) {
             <h1 className="text-3xl text-left font-bold  ">{coinData.name}</h1>
           </div>
           <p className="text-xl ">{coinData.symbol}</p>
-          <div className=" flex flex-row space-x-4 p-4">
+          <div className=" flex flex-row flex-wrap space-x-4 p-4">
             <TotalsCard
               title={"Current Price"}
-              value={coinData.market_data.current_price.usd}
+              value={currency(coinData.market_data.current_price.usd, {
+                symbol: "$",
+                separator: ",",
+              }).format()}
+            />
+            <TotalsCard
+              title={"Price Change%"}
+              value={coinData.market_data.price_change_percentage_24h}
+              percentageChange
+            />
+
+            <TotalsCard
+              title="Rank"
+              value={coinData.market_data.market_cap_rank}
             />
             <TotalsCard
               title={"Market Cap"}
-              value={coinData.market_data.market_cap.usd}
+              value={currency(coinData.market_data.market_cap.usd, {
+                symbol: "$",
+                separator: ",",
+              }).format()}
             />
           </div>
-          <p className="text-lg ">${}</p>
+
           <div className="m-10 space-y-2">
             <p className="text-lg font-bold">About {coinData.name}</p>
             <p
