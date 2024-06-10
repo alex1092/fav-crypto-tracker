@@ -7,6 +7,8 @@ import TotalsCard from "@/components/TotalsCard";
 import { CoinDataTypes } from "@/types/CoinDataTypes";
 import BackChevronButton from "@/components/BackChevronButton";
 import currency from "currency.js";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ThumbsDown, ThumbsUp } from "lucide-react";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const fetchCoinData = async () => {
@@ -20,6 +22,17 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   const coinData: CoinDataTypes = await fetchCoinData();
   const cleanDescription = DOMPurify.sanitize(coinData.description.en);
+
+  const getCurrentSentiment = () => {
+    if (
+      coinData.sentiment_votes_down_percentage <
+      coinData.sentiment_votes_up_percentage
+    ) {
+      return <p className="text-green-500">Buy</p>;
+    } else {
+      return <p className="text-red-500">Sell</p>;
+    }
+  };
 
   if (!coinData) {
     return <div>Hmmm something went wrong...</div>;
@@ -47,7 +60,6 @@ export default async function Page({ params }: { params: { id: string } }) {
               separator: ",",
             }).format()}
           />
-
           <TotalsCard
             title="Rank"
             value={coinData.market_data.market_cap_rank}
@@ -64,9 +76,27 @@ export default async function Page({ params }: { params: { id: string } }) {
               separator: ",",
             }).format()}
           />
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Current Sentiment</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-row justify-between align-middle">
+              {getCurrentSentiment()}
+
+              <div className="flex flex-col items-center">
+                <ThumbsDown className="w-4 h-4" />
+                {coinData.sentiment_votes_down_percentage}
+              </div>
+              <div className="flex flex-col items-center">
+                <ThumbsUp className="w-4 h-4" />
+                {coinData.sentiment_votes_up_percentage}
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
-        <div className="p-4 space-y-2">
+        <div className="p-4 sm:p-16 space-y-2">
           <p className="text-lg font-bold">About {coinData.name}</p>
           <p
             className=" font-light text-sm text-left "
