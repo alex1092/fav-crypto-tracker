@@ -7,7 +7,6 @@ import {
 } from "@/utils/constants";
 import { createClient } from "@/utils/supabase/server";
 import Image from "next/image";
-import { redirect } from "next/navigation";
 import currency from "currency.js";
 import { GlobalMarketArrayData } from "@/types/globalMarketType";
 import { NavBar } from "@/components/NavBar";
@@ -42,10 +41,6 @@ export default async function Home() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  if (!user) {
-    return redirect("/auth");
-  }
 
   const coinMarketData = await fetchCoinMarketData();
   const globalMarketData: GlobalMarketArrayData = await fetchGlobalMarketData();
