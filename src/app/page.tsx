@@ -5,7 +5,7 @@ import {
   COIN_GECKO_COIN_MARKET_ENDPOINT,
   COIN_GECKO_GLOBAL_MARKET_DATA_ENDPOINT,
 } from "@/utils/constants";
-import { createClient } from "@/utils/supabase/server";
+// import { createClient } from "@/utils/supabase/server";
 import Image from "next/image";
 import currency from "currency.js";
 import { GlobalMarketArrayData } from "@/types/globalMarketType";
@@ -36,11 +36,11 @@ async function fetchGlobalMarketData() {
 }
 
 export default async function Home() {
-  const supabase = createClient();
+  // const supabase = createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // const {
+  //   data: { user },
+  // } = await supabase.auth.getUser();
 
   const coinMarketData = await fetchCoinMarketData();
   const globalMarketData: GlobalMarketArrayData = await fetchGlobalMarketData();
@@ -90,7 +90,7 @@ export default async function Home() {
         </div>
 
         <div className=" w-full px-10">
-          <CoinMarketDataTable data={coinMarketData} user={user} />
+          <CoinMarketDataTable data={coinMarketData} />
         </div>
       </div>
     </main>

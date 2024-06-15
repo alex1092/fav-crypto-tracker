@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "./ui/table";
 import currencyJs from "currency.js";
-import { ArrowUpDown, Star } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 
 import Image from "next/image";
 import {
@@ -28,10 +28,8 @@ import {
 } from "@/types/coinMarketTypes";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { createClient } from "@/utils/supabase/client";
 
-import React, { useEffect, useState } from "react";
-import { User } from "@supabase/supabase-js";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const columnHelper = createColumnHelper<CoinMarketDataType>();
@@ -55,7 +53,7 @@ const columns = [
   }),
   columnHelper.accessor("current_price", {
     header: "Price",
-    // cell: (info) => <span>${currency(info.getValue(), { precision: 2 })}</span>,
+
     cell: (info) => `$${info.getValue()}`,
   }),
 
@@ -134,7 +132,6 @@ export default function CoinMarketDataTable({
   data,
 }: {
   data: CoinMarketDataArrayType;
-  user: User;
 }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
