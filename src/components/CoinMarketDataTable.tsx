@@ -194,6 +194,7 @@ export default function CoinMarketDataTable({
                   onClick={() => {
                     router.push(`/coin/${row.original.id}`);
                   }}
+                  className={"cursor-pointer"}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
