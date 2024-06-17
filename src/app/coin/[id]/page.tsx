@@ -9,6 +9,7 @@ import BackChevronButton from "@/components/BackChevronButton";
 import currency from "currency.js";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
+import Charts from "@/components/Charts";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const fetchCoinData = async () => {
@@ -19,6 +20,16 @@ export default async function Page({ params }: { params: { id: string } }) {
     }
     return data;
   };
+
+  const fetchChartData = async () => {
+    const res = await fetch(
+      `${COIN_GECKO_API_URL}/coins/${params.id}/market_chart?vs_currency=usd&days=7`
+    );
+    const data = await res.json();
+    return data;
+  };
+
+  const chartData = await fetchChartData();
 
   const coinData: CoinDataTypes = await fetchCoinData();
   const cleanDescription = DOMPurify.sanitize(coinData.description.en);
@@ -51,7 +62,6 @@ export default async function Page({ params }: { params: { id: string } }) {
           />
           <h1 className="text-3xl text-left font-bold  ">{coinData.name}</h1>
         </div>
-
         <div className=" flex flex-col sm:flex-row p-4 space-y-4 sm:space-y-0 sm:justify-center sm:space-x-4">
           <TotalsCard
             title={"Current Price"}
@@ -95,6 +105,17 @@ export default async function Page({ params }: { params: { id: string } }) {
             </CardContent>
           </Card>
         </div>
+
+        {chartData && (
+          <div className="border shadow-md rounded-md m-10">
+            <p className="text-center text-sm mt-2 text-gray-500">
+              Current price for 7 days
+            </p>
+            <div className="min-h-[300px] m-5">
+              <Charts coinChartData={chartData} />
+            </div>
+          </div>
+        )}
 
         <div className="p-4 sm:p-16 space-y-2">
           <p className="text-lg font-bold">About {coinData.name}</p>
