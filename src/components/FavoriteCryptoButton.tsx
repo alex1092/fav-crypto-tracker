@@ -5,6 +5,8 @@ import { User } from "@supabase/auth-js";
 import { useQuery } from "@tanstack/react-query";
 import { Star } from "lucide-react";
 import { useToast } from "./ui/use-toast";
+import { useState } from "react";
+import { LoaderCircle } from "lucide-react";
 
 type FavoriteCryptoButtonProps = {
   coinId: string;
@@ -18,10 +20,11 @@ export default function FavoriteCryptoButton({
   const supabase = createClient();
   const { toast } = useToast();
 
+  const [loadingFavoriteCoin, setLoadingFavoriteCoin] = useState(false);
+
   const {
     data: favoriteCoins,
     error,
-    isLoading,
     refetch,
   } = useQuery({
     queryKey: ["favoriteCoins"],
@@ -37,15 +40,18 @@ export default function FavoriteCryptoButton({
     },
   });
 
-  if (isLoading) {
-    return <div>Loading...</div>;
+  if (error) {
+    toast({
+      title: "Error",
+      description: error.message,
+      variant: "destructive",
+    });
   }
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
 
   const addFavoriteCoin = async () => {
+    setLoadingFavoriteCoin(true);
+
     let newCoinIdArray = [];
 
     if (favoriteCoins?.length === 0) {
@@ -68,6 +74,7 @@ export default function FavoriteCryptoButton({
         });
         refetch();
       }
+      setLoadingFavoriteCoin(false);
       return;
     }
 
@@ -91,6 +98,7 @@ export default function FavoriteCryptoButton({
         });
         refetch();
       }
+      setLoadingFavoriteCoin(false);
       return;
     }
 
@@ -113,16 +121,23 @@ export default function FavoriteCryptoButton({
       });
       refetch();
     }
+    setLoadingFavoriteCoin(false);
   };
 
   return (
-    <Star
-      onClick={addFavoriteCoin}
+    <>
+      {loadingFavoriteCoin ? (
+        <LoaderCircle className="w-4 h-4 animate-spin" />
+      ) : (
+        <Star
+          onClick={addFavoriteCoin}
       color={
         favoriteCoins?.some((coin) => coin.coin_id.includes(coinId))
           ? "yellow"
           : undefined
       }
     />
+    )}
+    </>
   );
 }

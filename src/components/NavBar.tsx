@@ -9,7 +9,6 @@ export const NavBar = () => {
   const pathname = usePathname();
 
   const isHome = pathname === "/";
-
   const isAuth = pathname === "/auth";
 
   return (
