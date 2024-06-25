@@ -10,13 +10,15 @@ export const NavBar = () => {
 
   const isHome = pathname === "/";
 
+  const isAuth = pathname === "/auth";
+
   return (
     <nav className="flex justify-end items-center space-x-4 pt-2 pr-4">
       <div className="flex flex-1 justify-between items-center">
         {!isHome && <BackChevronButton />}
       </div>
       <ModeToggle />
-      <SignInSignOutButton />
+      {!isAuth && <SignInSignOutButton />}
     </nav>
   );
 };

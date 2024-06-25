@@ -56,7 +56,7 @@ export default function Auth() {
     values: z.infer<typeof signInSchema> | z.infer<typeof signUpSchema>,
   ) {
     if (isSignUp) {
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email: values.email,
         password: values.password,
       });

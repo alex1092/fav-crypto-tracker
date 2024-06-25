@@ -7,7 +7,7 @@ import {
 import Image from "next/image";
 import currency from "currency.js";
 import { GlobalMarketArrayData } from "@/types/globalMarketType";
-import { NavBar } from "@/components/NavBar";
+
 
 const options = {
   method: "GET",
