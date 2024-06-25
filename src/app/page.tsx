@@ -1,11 +1,9 @@
 import CoinMarketDataTable from "@/components/CoinMarketDataTable";
-
 import TotalsCard from "@/components/TotalsCard";
 import {
   COIN_GECKO_COIN_MARKET_ENDPOINT,
   COIN_GECKO_GLOBAL_MARKET_DATA_ENDPOINT,
 } from "@/utils/constants";
-// import { createClient } from "@/utils/supabase/server";
 import Image from "next/image";
 import currency from "currency.js";
 import { GlobalMarketArrayData } from "@/types/globalMarketType";
@@ -19,39 +17,40 @@ const options = {
   },
 };
 
-async function fetchCoinMarketData() {
-  const res = await fetch(COIN_GECKO_COIN_MARKET_ENDPOINT, options);
-  if (!res.ok) {
-    throw new Error("Failed to fetch coin market data");
+async function fetchData(endpoint: string) {
+  try {
+    const res = await fetch(endpoint, options);
+    if (!res.ok) {
+      throw new Error(`Failed to fetch data from ${endpoint}`);
+    }
+    return res.json();
+  } catch (error) {
+    console.error(error);
+    throw error;
   }
-  return res.json();
-}
-
-async function fetchGlobalMarketData() {
-  const res = await fetch(COIN_GECKO_GLOBAL_MARKET_DATA_ENDPOINT, options);
-  if (!res.ok) {
-    throw new Error("Failed to fetch global market data");
-  }
-  return res.json();
 }
 
 export default async function Home() {
-  // const supabase = createClient();
+  const [coinMarketData, globalMarketData] = await Promise.all([
+    fetchData(COIN_GECKO_COIN_MARKET_ENDPOINT),
+    fetchData(COIN_GECKO_GLOBAL_MARKET_DATA_ENDPOINT),
+  ]);
 
-  // const {
-  //   data: { user },
-  // } = await supabase.auth.getUser();
-
-  const coinMarketData = await fetchCoinMarketData();
-  const globalMarketData: GlobalMarketArrayData = await fetchGlobalMarketData();
+  const {
+    data: {
+      active_cryptocurrencies,
+      total_market_cap,
+      total_volume,
+      market_cap_change_percentage_24h_usd,
+    },
+  } = globalMarketData as GlobalMarketArrayData;
 
   return (
     <main>
-      <NavBar />
       <div className="flex flex-col items-center justify-start h-screen">
         <Image
           src={
-            globalMarketData.data.market_cap_change_percentage_24h_usd < 0
+            market_cap_change_percentage_24h_usd < 0
               ? "/red-wojak.png"
               : "/wojak.png"
           }
@@ -66,30 +65,29 @@ export default async function Home() {
         <div className="flex flex-col sm:flex-row sm:flex-wrap justify-center gap-4 w-full pt-4 px-4 sm:px-0">
           <TotalsCard
             title="Active Cryptocurrencies"
-            value={globalMarketData.data.active_cryptocurrencies}
+            value={active_cryptocurrencies}
           />
           <TotalsCard
             title="Total Market Cap"
-            value={currency(globalMarketData.data.total_market_cap.usd, {
+            value={currency(total_market_cap.usd, {
               separator: ",",
               precision: 2,
             }).format()}
           />
-
           <TotalsCard
             title="Total 24h Volume"
-            value={currency(globalMarketData.data.total_volume.usd, {
+            value={currency(total_volume.usd, {
               separator: ",",
               precision: 2,
             }).format()}
           />
           <TotalsCard
             title="Market Cap Change"
-            value={globalMarketData.data.market_cap_change_percentage_24h_usd}
+            value={market_cap_change_percentage_24h_usd}
           />
         </div>
 
-        <div className=" w-full px-10">
+        <div className="w-full px-10">
           <CoinMarketDataTable data={coinMarketData} />
         </div>
       </div>

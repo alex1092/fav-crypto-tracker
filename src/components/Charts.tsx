@@ -36,7 +36,7 @@ export default function Charts({ coinChartData }: ChartsProps) {
     (): AxisOptions<PriceChart> => ({
       getValue: (datum) => datum.date,
     }),
-    []
+    [],
   );
 
   const secondaryAxes = useMemo(
@@ -46,7 +46,7 @@ export default function Charts({ coinChartData }: ChartsProps) {
         elementType: "line",
       },
     ],
-    []
+    [],
   );
 
   return (

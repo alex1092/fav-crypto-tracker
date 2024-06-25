@@ -53,7 +53,7 @@ export default function Auth() {
   });
 
   async function onSubmit(
-    values: z.infer<typeof signInSchema> | z.infer<typeof signUpSchema>
+    values: z.infer<typeof signInSchema> | z.infer<typeof signUpSchema>,
   ) {
     if (isSignUp) {
       const { data, error } = await supabase.auth.signUp({
