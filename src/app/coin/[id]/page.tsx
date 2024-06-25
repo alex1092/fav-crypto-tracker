@@ -12,14 +12,14 @@ import { createClient } from "@/utils/supabase/server";
 import FavoriteCryptoButton from "@/components/FavoriteCryptoButton";
 
 export default async function Page({ params }: { params: { id: string } }) {
-  
   const fetchCoinData = async () => {
     const [coinRes, chartRes] = await Promise.all([
       fetch(`${COIN_GECKO_API_URL}/coins/${params.id}`),
-      fetch(`${COIN_GECKO_API_URL}/coins/${params.id}/market_chart?vs_currency=usd&days=7`)
+      fetch(
+        `${COIN_GECKO_API_URL}/coins/${params.id}/market_chart?vs_currency=usd&days=7`,
+      ),
     ]);
-    
-   
+
     const coinData = await coinRes.json();
     const chartData = await chartRes.json();
 
@@ -29,19 +29,22 @@ export default async function Page({ params }: { params: { id: string } }) {
   const { coinData, chartData } = await fetchCoinData();
   const cleanDescription = DOMPurify.sanitize(coinData.description.en);
 
-  const getCurrentSentiment = () => (
-    coinData.sentiment_votes_down_percentage < coinData.sentiment_votes_up_percentage
-      ? <p className="text-green-500">Buy</p>
-      : <p className="text-red-500">Sell</p>
-  );
+  const getCurrentSentiment = () =>
+    coinData.sentiment_votes_down_percentage <
+    coinData.sentiment_votes_up_percentage ? (
+      <p className="text-green-500">Buy</p>
+    ) : (
+      <p className="text-red-500">Sell</p>
+    );
 
   if (!coinData) {
     return <div>Hmmm something went wrong...</div>;
   }
 
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   return (
     <div className="flex flex-col mt-10 h-screen">
@@ -53,7 +56,9 @@ export default async function Page({ params }: { params: { id: string } }) {
           height={40}
         />
         <h1 className="text-3xl text-left font-bold">{coinData.name}</h1>
-        { user ? <FavoriteCryptoButton coinId={coinData.id} userId={user.id} /> : null}
+        {user ? (
+          <FavoriteCryptoButton coinId={coinData.id} userId={user.id} />
+        ) : null}
       </div>
       <div className="flex flex-col sm:flex-row p-4 space-y-4 sm:space-y-0 sm:justify-center sm:space-x-4">
         <TotalsCard
