@@ -5,9 +5,10 @@ import BackChevronButton from "./BackChevronButton";
 import { ModeToggle } from "./ModeToggle";
 import SignInSignOutButton from "./SignInSignOutButton";
 import { usePathname } from "next/navigation";
+import { useUserStore } from "@/store/userStore";
 
 export const NavBar = () => {
-
+  const user = useUserStore((state) => state.user);
 
   const pathname = usePathname();
   const isHome = pathname === "/";
@@ -19,7 +20,7 @@ export const NavBar = () => {
         {!isHome && <BackChevronButton />}
       </div>
 
-      <Link href="/portfolio">Portfolio</Link>
+      {user && <Link href="/portfolio">Portfolio</Link>}
       <ModeToggle />
       {!isAuth && <SignInSignOutButton />}
     </nav>

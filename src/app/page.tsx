@@ -8,7 +8,6 @@ import Image from "next/image";
 import currency from "currency.js";
 import { GlobalMarketArrayData } from "@/types/globalMarketType";
 
-
 const options = {
   method: "GET",
   headers: {

@@ -31,8 +31,7 @@ export default function FavoriteCryptoButton({
     queryFn: async () => {
       const { data, error } = await supabase
         .from("favorite_coins")
-        .select("coin_id")
-        .eq("user_id", userId);
+        .select("coin_id");
       if (error) {
         throw new Error(error.message);
       }
@@ -47,7 +46,6 @@ export default function FavoriteCryptoButton({
       variant: "destructive",
     });
   }
-
 
   const addFavoriteCoin = async () => {
     setLoadingFavoriteCoin(true);
@@ -79,7 +77,9 @@ export default function FavoriteCryptoButton({
     }
 
     if (favoriteCoins?.some((coin) => coin.coin_id.includes(coinId))) {
-      newCoinIdArray = favoriteCoins[0].coin_id.filter((id: string) => id !== coinId);
+      newCoinIdArray = favoriteCoins[0].coin_id.filter(
+        (id: string) => id !== coinId,
+      );
       const { error } = await supabase
         .from("favorite_coins")
         .update({ coin_id: newCoinIdArray })
@@ -131,13 +131,13 @@ export default function FavoriteCryptoButton({
       ) : (
         <Star
           onClick={addFavoriteCoin}
-      color={
-        favoriteCoins?.some((coin) => coin.coin_id.includes(coinId))
-          ? "yellow"
-          : undefined
-      }
-    />
-    )}
+          color={
+            favoriteCoins?.some((coin) => coin.coin_id.includes(coinId))
+              ? "yellow"
+              : undefined
+          }
+        />
+      )}
     </>
   );
 }
