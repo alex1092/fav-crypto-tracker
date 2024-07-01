@@ -1,3 +1,5 @@
+export type CoinDataTypesArray = CoinDataTypes[];
+
 export interface CoinDataTypes {
   id: string;
   symbol: string;

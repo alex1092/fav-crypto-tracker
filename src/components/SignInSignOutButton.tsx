@@ -3,11 +3,12 @@
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { User } from "@supabase/supabase-js";
+import { useEffect } from "react";
+
+import { useUserStore } from "@/store/userStore";
 
 export default function SignInSignOutButton() {
-  const [user, setUser] = useState<User | null>(null);
+  const user = useUserStore((state) => state.user);
   const router = useRouter();
 
   useEffect(() => {
@@ -16,7 +17,7 @@ export default function SignInSignOutButton() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      setUser(user);
+      useUserStore.getState().setUser(user);
     }
 
     fetchUser();
@@ -26,7 +27,7 @@ export default function SignInSignOutButton() {
     const supabase = createClient();
     if (user) {
       supabase.auth.signOut();
-      setUser(null);
+      useUserStore.getState().setUser(null);
       router.refresh();
     } else {
       router.push("/auth");

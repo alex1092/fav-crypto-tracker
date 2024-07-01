@@ -1,13 +1,16 @@
 "use client";
 
+import Link from "next/link";
 import BackChevronButton from "./BackChevronButton";
 import { ModeToggle } from "./ModeToggle";
 import SignInSignOutButton from "./SignInSignOutButton";
 import { usePathname } from "next/navigation";
+import { useUserStore } from "@/store/userStore";
 
 export const NavBar = () => {
-  const pathname = usePathname();
+  const user = useUserStore((state) => state.user);
 
+  const pathname = usePathname();
   const isHome = pathname === "/";
   const isAuth = pathname === "/auth";
 
@@ -16,6 +19,8 @@ export const NavBar = () => {
       <div className="flex flex-1 justify-between items-center">
         {!isHome && <BackChevronButton />}
       </div>
+
+      {user && <Link href="/portfolio">Portfolio</Link>}
       <ModeToggle />
       {!isAuth && <SignInSignOutButton />}
     </nav>
